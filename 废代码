@@ -1,0 +1,587 @@
+/*System.out.println("属性节点的数量="+attrNodes.getLength());
+				for (int j = 0; j < attrNodes.getLength(); j++)
+				{
+					Node attr = attrNodes.item(j);
+					
+					switch(XmlAttr.getNodeType(attr.getNodeName()))
+					{
+						case XmlAttr.NODE_TYPE_ATTR:
+						{
+							System.out.printf("%s：%s\n",attr.getNodeName(), attr.getChildNodes().item(0).getNodeValue());
+						}break;
+						
+						case XmlAttr.NODE_TYPE_NOATTR:
+						{
+							System.out.println(attr.getNodeName());
+						}break;
+						
+						case XmlAttr.NODE_TYPE_ATTRLIST:
+						{
+							
+						}break;
+					}
+				}
+				break;*/
+			}
+			
+			/*NodeList nodeList = document.getElementsByTagName("REPLY"); //获取xml文件中名称为REPLY的所有节点
+			System.out.println(nodeList.getLength());
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
+				Node node = nodeList.item(i);
+				NamedNodeMap namedNodeMap = node.getAttributes();
+				for (int j = 0; j < namedNodeMap.getLength(); j++)
+				{
+					Node attribute = namedNodeMap.item(j);
+					System.out.println(attribute.getNodeName());
+					System.out.println(attribute.getNodeValue());
+				}
+				
+				NodeList childNodeList = node.getChildNodes();
+				System.out.println(childNodeList.getLength());
+				for (int j = 0; j < childNodeList.getLength(); j++)
+				{
+					
+				}
+			}*/
+			
+			/*NodeList nodeList = document.getElementsByTagName("Envelope");
+			//NodeList nodeList = document.getElementsByTagName("YOUNGCONTENT");
+			System.out.println("节点的数量"+nodeList.getLength());
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
+				Element element = (Element) nodeList.item(i);
+				element.getNodeName();
+				System.out.println(element.getNodeName());
+				System.out.println(element.getNodeValue());
+				NamedNodeMap nameNodeMap = element.getAttributes();
+				for (int j = 0; j < nameNodeMap.getLength(); j++)
+				{
+					Node node = nameNodeMap.item(j);
+					System.out.println("属性名："+node.getNodeName());
+					System.out.println("属性值："+node.getNodeValue());
+				}
+				//System.out.println(nodeList.item(i).getChildNodes().getLength());
+			}*/
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+/*NodeList resultList = document.getElementsByTagName(XmlAttr.ATTRLIST_NODE_YOUNGCONTENT); //结果列表
+			for (int i = 0; i < resultList.getLength(); i++)
+			{
+				Node result = resultList.item(i); //单个结果
+				NodeList attrNodes = result.getChildNodes(); //属性节点列表
+				
+				parseNodeList(attrNodes);
+				break;
+			}*/			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+//System.out.println(xmlData);
+		
+		System.out.println("SUCCESS:"+xmlData.SUCCESS);
+		System.out.println("结果数量："+xmlData.YOUNGCONTENT.size());
+		for (YOUNGCONTENT YOUNGCONTENT : xmlData.YOUNGCONTENT)
+		{
+			System.out.println("LASTCHANGEDDATE:"+YOUNGCONTENT.LASTCHANGEDDATE);
+			
+			for (int i = 0; i < YOUNGCONTENT.YOUNGPROPERTIES.YOUNGPROPERTY.size(); i++)
+			{
+				System.out.print(YOUNGCONTENT.YOUNGPROPERTIES.YOUNGPROPERTY.get(i).DESCRIPTION+"="+YOUNGCONTENT.YOUNGPROPERTIES.YOUNGPROPERTY.get(i).VALUE+"\n");
+				//System.out.printf("%s=%s \n"+YOUNGCONTENT.YOUNGPROPERTIES.YOUNGPROPERTY.get(i).DESCRIPTION, YOUNGCONTENT.YOUNGPROPERTIES.YOUNGPROPERTY.get(i).VALUE);
+			}
+			System.out.println();
+			
+			//break;
+		}			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	
+	
+	/**
+	 * 将xml信息转换为初始的xml字符串
+	 * @param xmlInfoStream xml信息对应的URI
+	 * @return xml字符串
+	 */
+	public static String getOriginalXmlStr(String xmlInfoUri)
+	{
+		return getOriginalXmlStr(new File(xmlInfoUri));
+	}
+	
+	/**
+	 * 将xml信息转换为初始的xml字符串
+	 * @param xmlInfoStream xml信息对应的文件
+	 * @return xml字符串
+	 */
+	public static String getOriginalXmlStr(File xmlInfoFile)
+	{
+		try
+		{
+			return getOriginalXmlStr(new FileInputStream(xmlInfoFile));
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return null;
+	}		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+public static XmlData postRequest(String UrlSpec, int connectTimeout, int readTimeout, String xmlRequestStr)
+	{
+		HttpURLConnection httpURLConnection = null;
+		
+		try
+		{
+			URL url = new URL(UrlSpec);
+			httpURLConnection = (HttpURLConnection) url.openConnection();
+			httpURLConnection.setRequestMethod("POST");
+			httpURLConnection.setDoOutput(true);
+			httpURLConnection.setDoInput(true);
+			httpURLConnection.setConnectTimeout(connectTimeout);
+			httpURLConnection.setReadTimeout(readTimeout);
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+		}
+		catch (ProtocolException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return postRequest(xmlRequestStr, httpURLConnection);
+	}
+	
+	private static XmlData postRequest(String xmlRequestStr, HttpURLConnection httpURLConnection)
+	{
+		XmlData resultData = null;
+		
+		try
+		{
+			httpURLConnection.getOutputStream().write(xmlRequestStr.getBytes());
+			httpURLConnection.getOutputStream().flush();
+			httpURLConnection.getOutputStream().close();
+			resultData = XmlParser.parserXml(httpURLConnection.getInputStream());
+			httpURLConnection.disconnect();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return resultData;
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+/**
+	 * 发送http请求，请求方法为POST
+	 * @param UrlSpec 请求的目的地址
+	 * @param connectTimeout 连接超时时间
+	 * @param readTimeout 读取数据超时时间
+	 * @param xmlRequestStr xml请求信息
+	 * @return
+	 */
+	/*public static XmlData postRequest(String UrlSpec, int connectTimeout, int readTimeout, String xmlRequestStr)
+	{
+		XmlData resultData = null;
+		
+		try
+		{
+			URL url = new URL(UrlSpec);
+			HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+			httpURLConnection.setRequestMethod("POST");
+			httpURLConnection.setDoOutput(true); //可以写入信息
+			httpURLConnection.setDoInput(true); //可以读取信息
+			httpURLConnection.setConnectTimeout(connectTimeout);
+			httpURLConnection.setReadTimeout(readTimeout);
+			httpURLConnection.getOutputStream().write(xmlRequestStr.getBytes());
+			httpURLConnection.getOutputStream().flush();
+			httpURLConnection.getOutputStream().close();
+			resultData = XmlParser.parserXml(httpURLConnection.getInputStream());
+			httpURLConnection.disconnect();
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return resultData;
+	}*/	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+/**
+	 * 将xml信息转换为初始的xml字符串
+	 * @param xmlInfoStream xml信息对应的流
+	 * @return xml字符串
+	 */
+	public static String getOriginalXmlStr(InputStream xmlInfoStream)
+	{
+		StringBuilder xmlStr = new StringBuilder();
+		
+		try
+		{
+			InputStreamReader isr = new InputStreamReader(xmlInfoStream);
+			BufferedReader br = new BufferedReader(isr);
+			String str;
+			while((str = br.readLine()) != null)
+			{
+				xmlStr.append(str);
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return xmlStr.toString();
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//System.out.printf("<%s>", qName);	
+//System.out.printf("%s", value);	
+//System.out.printf("</%s>\n", qName);	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+String inputStream64 = "";
+				try
+				{
+					inputStream64 = new String(Base64.encodeBase64(IOUtil.streamToByte(new FileInputStream(document))));
+				}
+				catch (FileNotFoundException e)
+				{
+					e.printStackTrace();
+				}	
+YOUNGDOCUMENT.INPUTSTREAM = inputStream64;	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+/*public static ArrayList<Table> queryTable(String sqlStr, String tableName, int startIndex, int num)
+	{
+		ArrayList<Table> tableList = null;
+		
+		String xmlStr = XmlWrapper.wrapXmlForSelect(sqlStr, tableName, String.valueOf(startIndex), String.valueOf(num));
+		XmlData xmlData = HttpRequester.postRequest(xmlStr);
+		tableList = DataParser.getTable(xmlData);
+		
+		return tableList;
+	}*/	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//System.out.println(DataOperation.queryTable(UserTable.TABLE_NAME));
+		//System.out.println(DataOperation.queryTable(UserTable.TABLE_NAME, UserTable.FIELD_USERNAME, "lb"));
+		
+		//T.writeStrToPath(HttpRequesterHelper.postRequest(XmlPackage.packageDelete("")).toString(), "replyXmlData.txt");
+		//T.writeStrToPath(IOUtil.streamToString(HttpRequester.postRequest(HttpRequester.createConnection(Constants.SERVER_IP_ADDRESS, 20000, 20000), "")), "replyXmlStr.xml");
+		
+		
+		
+		/*DocInfor docInfor = new DocInfor("USERS", "A0100320166081138136128326");
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("USERSNAME", "lmc");
+		T.writeStrToPath(XmlPackage.packageForSaveOrUpdate(map, docInfor, false), "1.xml");
+		
+		T.writeStrToPath(XmlPackage.packageForInsertFileData(map, docInfor, false, "request.xml", "txt"), "2.xml");
+		
+		String[] fileName = new String[]{"request.xml", "DataSetList.txt"};
+		String[] fileType = new String[]{"txt", "txt"};
+		T.writeStrToPath(XmlPackage.packageForInsertFileData(map, docInfor, false, fileName, fileType), "3.xml");
+		
+		T.writeStrToPath(XmlPackage.packageSelect("from (select * from USERS ) USERS", "10", "", "", "SEARCHYOUNGCONTENT", docInfor, false, false, "0"), "4.xml");
+		
+		T.writeStrToPath(XmlPackage.packageForLogin("docadmin", "passw0rd"), "5.xml");
+		
+		T.writeStrToPath(XmlPackage.packageAccount("docadmin", "passw0rd"), "6.xml");
+		
+		T.writeStrToPath(XmlPackage.packageDelete("A0100320166081138136128326"), "7.xml");*/
+		
+		//System.out.println(xmlParser.getXmlData());
+		
+		/*XmlData data = HttpRequester.postRequest(XmlPackage.packageSelect("from USERS", "", "", "", "SEARCHYOUNGCONTENT", new DocInfor("", "USERS"), true, false, ""));
+		ArrayList<Table> tableList = DataParser.getTable(data);
+		System.out.println(data);
+		System.out.println(tableList);*/
+		
+		//HashMap<String, String> map = new HashMap<>();
+		//map.put(UserTable.FIELD_REALNAME, "邓大平");
+		//String xmlStr = XmlWrapper.wrapXmlForQuery(SQLWrapper.queryTable(UserTable.TABLE_NAME, map), UserTable.TABLE_NAME, "", "");
+		//String xmlStr = XmlWrapper.wrapXmlForInsert(map, UserTable.TABLE_NAME, null);
+		//String xmlStr = XmlWrapper.wrapXmlForSelect(SQLWrapper.queryTable(UserTable.TABLE_NAME, TableInfo.CONTENTID, "A0100320167121106595602008"), UserTable.TABLE_NAME, "", "");
+		/*ArrayList<Document> fileList = new ArrayList<>();
+		fileList.add(new Document("llc.jpeg", "jpeg"));*/
+		//String xmlStr = XmlWrapper.wrapXmlForUpdate(map, "A0100320167121106595602008", null);
+		//String xmlStr = XmlPackage.packageForInsertFileData(new HashMap<>(), new DocInfor("A0100320167121106595602008", ""), true, "llc.jpeg", "jpeg");
+		/*String xmlStr = XmlWrapper.wrapXmlForDelete("A0100320167121423555511674");
+		System.out.println(xmlStr);
+		
+		FileOutputStream fos = new FileOutputStream("request.xml", false);
+		fos.write(xmlStr.getBytes());
+		fos.flush();
+		fos.close();
+		
+		XmlData xmlData = HttpRequester.postRequest(xmlStr);
+		String xmlDataStr = xmlData.toString();
+		FileOutputStream fos2 = new FileOutputStream("replyXmlData.txt", false);
+		fos2.write(xmlDataStr.getBytes());
+		fos2.flush();
+		fos2.close();*/	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+			
